@@ -2,7 +2,10 @@
 <html lang="id" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
 
     <title>Invitation: Buka Bersama TAN Group</title>
     <meta
@@ -62,12 +65,10 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
-
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
     <style>
@@ -75,12 +76,32 @@
         font-family: "Poppins", sans-serif;
         background-color: #050505;
         color: #ffffff;
+        overflow: hidden; /* Dikunci sampai undangan dibuka */
       }
       .font-serif {
         font-family: "Playfair Display", serif;
       }
 
-      /* Premium Gold Gradient Text */
+      /* Opening Overlay Style */
+      #opening-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at center, #1a1a1a, #050505);
+        transition:
+          transform 1s cubic-bezier(0.77, 0, 0.175, 1),
+          opacity 0.8s ease;
+      }
+      .overlay-hidden {
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+      }
+
       .text-gold-gradient {
         background: linear-gradient(
           to right,
@@ -95,7 +116,6 @@
         color: transparent;
       }
 
-      /* Enhanced Glassmorphism */
       .glass-card {
         background: rgba(20, 20, 20, 0.4);
         backdrop-filter: blur(12px);
@@ -110,12 +130,10 @@
         transform: translateY(-5px);
       }
 
-      /* Soft Text Glow */
       .text-glow-soft {
         text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
       }
 
-      /* Floating Animation */
       @keyframes float {
         0% {
           transform: translateY(0px);
@@ -131,7 +149,6 @@
         animation: float 4s ease-in-out infinite;
       }
 
-      /* Lantern Swing Animation */
       @keyframes swing {
         0% {
           transform: rotate(5deg);
@@ -152,13 +169,11 @@
         animation: swing 4s ease-in-out infinite alternate-reverse;
       }
 
-      /* Decorative Pattern Overlay */
       .pattern-overlay {
         background-image: url("https://www.transparenttextures.com/patterns/arabesque.png");
         opacity: 0.15;
       }
 
-      /* Twinkling Stars Animation */
       @keyframes twinkle {
         0%,
         100% {
@@ -173,15 +188,73 @@
       .animate-twinkle {
         animation: twinkle 3s infinite ease-in-out;
       }
-      .delay-1000 {
-        animation-delay: 1s;
+
+      /* Music Floating Button */
+      #music-control {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+        width: 44px;
+        height: 44px;
+        background: rgba(212, 175, 55, 0.2);
+        border: 1px solid #d4af37;
+        border-radius: 50%;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        color: #d4af37;
+        backdrop-filter: blur(5px);
       }
-      .delay-2000 {
-        animation-delay: 2s;
+      .music-spin {
+        animation: spin 4s linear infinite;
+      }
+      @keyframes spin {
+        100% {
+          transform: rotate(360deg);
+        }
       }
     </style>
   </head>
   <body class="antialiased overflow-x-hidden relative">
+    <div id="opening-overlay">
+      <div class="absolute inset-0 pattern-overlay"></div>
+      <div class="relative z-10 text-center px-6">
+        <img
+          src="logo-dark.png"
+          alt="Logo"
+          class="h-12 md:h-16 mx-auto mb-8 opacity-90"
+        />
+        <i
+          class="fa-solid fa-star-and-crescent text-gold text-5xl mb-6 animate-float"
+        ></i>
+        <h2 class="text-gold tracking-[0.4em] uppercase text-[10px] mb-4">
+          Official Invitation
+        </h2>
+        <h1
+          class="font-serif text-3xl md:text-5xl font-bold text-white mb-10 text-glow-soft"
+        >
+          Buka Puasa Bersama <br />
+          Team Head Office
+        </h1>
+        <div class="flex justify-center">
+          <button
+            onclick="startInvitation()"
+            class="px-10 py-4 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#AA771C] text-darker font-bold rounded-full shadow-2xl hover:scale-105 transition-all tracking-widest text-sm flex items-center gap-3"
+          >
+            <i class="fa-solid fa-envelope-open"></i> BUKA UNDANGAN
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <audio id="bgMusic" loop>
+      <source src="ramadhan.mp3" type="audio/mpeg" />
+    </audio>
+    <button id="music-control" onclick="toggleMusic()">
+      <i id="music-icon" class="fa-solid fa-music"></i>
+    </button>
+
     <div class="absolute top-0 left-4 md:left-16 z-20 opacity-60 lantern-swing">
       <div
         class="w-0.5 h-16 bg-gradient-to-b from-gold to-transparent mx-auto"
@@ -234,7 +307,6 @@
           alt="Tan Group Logo"
           class="h-10 md:h-14 mb-10 object-contain opacity-75 hover:opacity-100 transition duration-500 filter brightness-110"
         />
-
         <i
           class="fa-solid fa-moon text-gold text-3xl md:text-4xl mb-6 animate-float opacity-80"
         ></i>
@@ -243,7 +315,6 @@
         >
           You are invited
         </h3>
-
         <h1
           class="font-serif text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-glow-soft text-white"
         >
@@ -252,7 +323,6 @@
             >Team Head Office</span
           >
         </h1>
-
         <p
           class="text-gray-400 mb-10 max-w-xl mx-auto text-sm md:text-base leading-relaxed font-light"
         >
@@ -263,49 +333,49 @@
         </p>
 
         <div
-          class="glass-card px-8 py-5 rounded-2xl inline-flex gap-6 md:gap-10 mb-12"
+          class="glass-card px-4 md:px-8 py-5 rounded-2xl flex justify-center gap-3 md:gap-10 mb-12 min-w-[300px]"
         >
           <div class="text-center">
             <span
               id="days"
-              class="block font-serif text-3xl md:text-4xl text-gold-gradient font-bold"
+              class="block font-serif text-2xl md:text-4xl text-gold-gradient font-bold"
               >00</span
             >
             <span
-              class="text-[10px] md:text-xs uppercase tracking-[0.2em] text-gray-500 mt-1 block"
+              class="text-[8px] md:text-xs uppercase tracking-wider text-gray-500 block"
               >Hari</span
             >
           </div>
           <div class="text-center">
             <span
               id="hours"
-              class="block font-serif text-3xl md:text-4xl text-gold-gradient font-bold"
+              class="block font-serif text-2xl md:text-4xl text-gold-gradient font-bold"
               >00</span
             >
             <span
-              class="text-[10px] md:text-xs uppercase tracking-[0.2em] text-gray-500 mt-1 block"
+              class="text-[8px] md:text-xs uppercase tracking-wider text-gray-500 block"
               >Jam</span
             >
           </div>
           <div class="text-center">
             <span
               id="minutes"
-              class="block font-serif text-3xl md:text-4xl text-gold-gradient font-bold"
+              class="block font-serif text-2xl md:text-4xl text-gold-gradient font-bold"
               >00</span
             >
             <span
-              class="text-[10px] md:text-xs uppercase tracking-[0.2em] text-gray-500 mt-1 block"
+              class="text-[8px] md:text-xs uppercase tracking-wider text-gray-500 block"
               >Menit</span
             >
           </div>
           <div class="text-center">
             <span
               id="seconds"
-              class="block font-serif text-3xl md:text-4xl text-gold-gradient font-bold"
+              class="block font-serif text-2xl md:text-4xl text-gold-gradient font-bold"
               >00</span
             >
             <span
-              class="text-[10px] md:text-xs uppercase tracking-[0.2em] text-gray-500 mt-1 block"
+              class="text-[8px] md:text-xs uppercase tracking-wider text-gray-500 block"
               >Detik</span
             >
           </div>
@@ -314,7 +384,7 @@
         <div>
           <a
             href="#detail"
-            class="inline-block border border-gold/50 text-goldlight px-8 py-3.5 rounded-full hover:bg-gold hover:text-darker transition duration-500 font-medium tracking-wide text-sm shadow-[0_0_20px_rgba(212,175,55,0.15)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]"
+            class="inline-block border border-gold/50 text-goldlight px-8 py-3.5 rounded-full hover:bg-gold hover:text-darker transition duration-500 font-medium tracking-wide text-sm shadow-[0_0_20px_rgba(212,175,55,0.15)]"
           >
             Lihat Detail Acara
           </a>
@@ -337,7 +407,7 @@
               <i class="fa-regular fa-calendar-days"></i>
             </div>
             <h4 class="font-serif text-xl font-bold mb-3 text-white">Waktu</h4>
-            <p class="text-gray-400 text-sm leading-relaxed">
+            <p class="text-gray-400 text-sm">
               Selasa, 17 Maret 2026<br />16.00 WIB - Selesai
             </p>
           </div>
@@ -379,7 +449,7 @@
               <i class="fa-solid fa-location-dot"></i>
             </div>
             <h4 class="font-serif text-xl font-bold mb-3 text-white">Tempat</h4>
-            <p class="text-gray-400 text-sm leading-relaxed">
+            <p class="text-gray-400 text-sm">
               The Brotherhood Gunawarman<br />Jakarta Selatan
             </p>
           </div>
@@ -455,7 +525,6 @@
             <i
               class="fa-solid fa-gift absolute -bottom-10 -right-10 text-9xl text-gold opacity-5 rotate-12"
             ></i>
-
             <div class="text-center mb-8 relative z-10">
               <div
                 class="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-gold/20"
@@ -468,7 +537,6 @@
                 Tukar Kado
               </h2>
             </div>
-
             <ul
               class="space-y-5 text-gray-300 text-sm font-light relative z-10"
             >
@@ -479,7 +547,7 @@
                   <i class="fa-solid fa-check text-gold text-xs"></i>
                 </div>
                 <span class="leading-relaxed"
-                  >Setiap peserta dimohon membawa
+                  >Membawa
                   <strong class="text-white font-medium">1 kado spesial</strong
                   >.</span
                 >
@@ -491,9 +559,9 @@
                   <i class="fa-solid fa-tags text-gold text-xs"></i>
                 </div>
                 <span class="leading-relaxed"
-                  >Minimal nilai kado adalah
+                  >Minimal nilai
                   <strong class="text-gold-gradient font-semibold text-base"
-                    >Rp20.000/orang</strong
+                    >Rp20.000</strong
                   >.</span
                 >
               </li>
@@ -504,11 +572,10 @@
                   <i class="fa-solid fa-box-open text-gold text-[10px]"></i>
                 </div>
                 <span class="leading-relaxed"
-                  >Kado mohon dikumpulkan kepada
-                  <strong class="text-white font-medium">HRD</strong> paling
-                  lambat
+                  >Kumpulkan ke
+                  <strong class="text-white font-medium">HRD</strong> maks
                   <strong
-                    class="text-goldlight font-medium border-b border-gold/50 pb-0.5"
+                    class="text-goldlight font-medium border-b border-gold/50"
                     >15 Maret 2026</strong
                   >.</span
                 >
@@ -519,160 +586,139 @@
       </div>
     </section>
 
-    <section class="py-24 px-4 bg-dark relative">
-      <div
-        class="max-w-5xl mx-auto text-center relative z-10"
+    <section class="py-24 px-4 bg-dark relative text-center">
+      <h2
+        class="font-serif text-3xl md:text-4xl font-bold text-white mb-3"
         data-aos="fade-up"
       >
-        <h2 class="font-serif text-3xl md:text-4xl font-bold text-white mb-3">
-          Lokasi Acara
-        </h2>
-        <p class="text-goldlight mb-10 font-light tracking-wide">
-          The Brotherhood Gunawarman
-        </p>
-
-        <div
-          class="w-full h-[400px] rounded-3xl overflow-hidden border border-gold/20 shadow-[0_10px_40px_rgba(0,0,0,0.8)] relative group p-2 bg-white/5 backdrop-blur-sm"
+        Lokasi Acara
+      </h2>
+      <p class="text-goldlight mb-10 font-light tracking-wide">
+        The Brotherhood Gunawarman
+      </p>
+      <div
+        class="max-w-5xl mx-auto w-full h-[300px] md:h-[400px] rounded-3xl overflow-hidden border border-gold/20 shadow-2xl"
+        data-aos="zoom-in"
+      >
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.1933588343227!2d106.80454307586834!3d-6.238226761089181!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f132e762f415%3A0x209f6b38c0292db3!2sThe%20Brotherhood%20Gunawarman!5e0!3m2!1sen!2sid!4v1772789676016!5m2!1sen!2sid"
+          width="100%"
+          height="100%"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+        ></iframe>
+      </div>
+      <div class="mt-12">
+        <a
+          href="https://maps.app.goo.gl/eSsALAPyLMfU13Eg9"
+          target="_blank"
+          class="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-darker font-semibold px-8 py-4 rounded-full hover:scale-105 transition shadow-lg inline-flex items-center gap-3"
         >
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.1933588343227!2d106.80454307586834!3d-6.238226761089181!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f132e762f415%3A0x209f6b38c0292db3!2sThe%20Brotherhood%20Gunawarman!5e0!3m2!1sen!2sid!4v1772789676016!5m2!1sen!2sid"
-            width="100%"
-            height="100%"
-            style="border: 0; border-radius: 1.25rem"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            class="filter opacity-90 group-hover:opacity-100 transition duration-500"
-          >
-          </iframe>
-        </div>
-
-        <div class="mt-12">
-          <a
-            href="https://maps.app.goo.gl/eSsALAPyLMfU13Eg9"
-            target="_blank"
-            class="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-darker font-semibold px-8 py-4 rounded-full hover:scale-105 transition duration-300 shadow-[0_0_20px_rgba(212,175,55,0.3)] inline-flex items-center gap-3"
-          >
-            <i class="fa-solid fa-map-location-dot"></i> Buka Panduan Arah
-          </a>
-        </div>
+          <i class="fa-solid fa-map-location-dot"></i> Buka Panduan Arah
+        </a>
       </div>
     </section>
 
-    <section class="py-24 px-4 bg-darker relative border-t border-white/5">
-      <div class="absolute inset-0 pattern-overlay opacity-10"></div>
+    <section
+      class="py-24 px-4 bg-darker relative border-t border-white/5 text-center"
+    >
       <div
-        class="max-w-4xl mx-auto text-center relative z-10"
+        class="max-w-4xl mx-auto glass-card p-10 md:p-14 rounded-3xl"
         data-aos="zoom-in"
       >
-        <div
-          class="glass-card p-10 md:p-14 rounded-3xl relative overflow-hidden group"
+        <i class="fa-regular fa-id-card text-gold text-5xl mb-6"></i>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-white mb-4">
+          Konfirmasi Kehadiran
+        </h2>
+        <p class="text-gray-400 mb-10 font-light">
+          Mohon kesediaan rekan-rekan mengisi form konfirmasi kehadiran.
+        </p>
+        <a
+          href="https://bit.ly/surveymembuktikaaan"
+          target="_blank"
+          class="bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-darker font-bold px-10 py-4 rounded-full shadow-lg"
+          >ISI FORM KEHADIRAN</a
         >
-          <div
-            class="absolute inset-0 bg-gold/5 blur-3xl rounded-full scale-150 group-hover:bg-gold/10 transition duration-500"
-          ></div>
-
-          <div class="relative z-10">
-            <div
-              class="w-20 h-20 bg-gradient-to-br from-gold/20 to-transparent text-gold rounded-full flex items-center justify-center mx-auto mb-6 text-3xl border border-gold/20 animate-float"
-            >
-              <i class="fa-regular fa-id-card"></i>
-            </div>
-            <h2
-              class="font-serif text-3xl md:text-4xl font-bold text-white mb-4"
-            >
-              Konfirmasi Kehadiran
-            </h2>
-            <p
-              class="text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed font-light"
-            >
-              Untuk pendataan peserta dan kelancaran persiapan acara, mohon
-              kesediaan Bapak/Ibu/Rekan-rekan untuk mengisi form konfirmasi
-              kehadiran melalui tautan di bawah ini.
-            </p>
-
-            <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSdrHHhTUlOGtU3Ue7kDUq9BRE2k5Yqpbmy8Mu1DffGKCzvjDg/viewform?usp=header"
-              target="_blank"
-              class="inline-flex items-center gap-3 bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] text-darker font-bold px-10 py-4 rounded-full hover:scale-105 transition duration-300 shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_30px_rgba(212,175,55,0.5)]"
-            >
-              <i class="fa-solid fa-clipboard-check text-lg"></i> Isi Form
-              Kehadiran
-            </a>
-          </div>
-        </div>
       </div>
     </section>
 
     <footer
-      class="pt-20 pb-10 text-center bg-dark px-4 relative overflow-hidden border-t border-gold/10"
+      class="pt-20 pb-10 text-center bg-dark px-4 border-t border-gold/10"
     >
-      <div class="absolute inset-0 pattern-overlay opacity-5"></div>
-      <div class="max-w-2xl mx-auto relative z-10" data-aos="zoom-in">
-        <i class="fa-solid fa-quote-left text-gold/40 text-4xl mb-6"></i>
-        <p
-          class="font-serif text-xl md:text-2xl italic text-gray-300 mb-8 leading-relaxed"
-        >
-          "Ramadan adalah waktu terbaik untuk berbagi, bersyukur, dan mempererat
-          silaturahmi."
-        </p>
-        <p class="text-gray-400 text-sm mb-12 font-light">
-          Kami menantikan kehadiran Anda untuk bersama merayakan kebersamaan di
-          bulan yang penuh berkah ini.<br />
-          Wassalamu’alaikum Wr. Wb.
-        </p>
-
-        <div
-          class="w-16 h-0.5 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto rounded-full mb-10"
-        ></div>
-
-        <div
-          class="text-[10px] md:text-xs text-gray-600 uppercase tracking-[0.2em] font-medium"
-        >
-          © 2026 PT. Tri Agung Nusantara. <br class="md:hidden" />
-          All Rights Reserved.
-        </div>
+      <p class="font-serif text-xl italic text-gray-300 mb-8 leading-relaxed">
+        "Ramadan adalah waktu terbaik untuk berbagi dan mempererat silaturahmi."
+      </p>
+      <div class="w-16 h-0.5 bg-gold mx-auto mb-10"></div>
+      <div
+        class="text-[10px] md:text-xs text-gray-600 tracking-[0.2em] uppercase"
+      >
+        © 2026 PT. Tri Agung Nusantara. All Rights Reserved.
       </div>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
     <script>
-      AOS.init({
-        once: true,
-        offset: 80,
-        duration: 1000,
-      });
+      AOS.init({ once: true, duration: 1000 });
+
+      const audio = document.getElementById("bgMusic");
+      const musicControl = document.getElementById("music-control");
+      let isPlaying = false;
+
+      function startInvitation() {
+        // Hilangkan overlay
+        document
+          .getElementById("opening-overlay")
+          .classList.add("overlay-hidden");
+        // Buka Scroll
+        document.body.style.overflow = "auto";
+        // Putar Musik dari detik ke 30
+        audio.currentTime = 30;
+        audio
+          .play()
+          .then(() => {
+            isPlaying = true;
+            musicControl.style.display = "flex";
+            musicControl.classList.add("music-spin");
+          })
+          .catch((e) => console.log("Auto-play diblokir browser"));
+      }
+
+      function toggleMusic() {
+        if (isPlaying) {
+          audio.pause();
+          musicControl.classList.remove("music-spin");
+        } else {
+          audio.play();
+          musicControl.classList.add("music-spin");
+        }
+        isPlaying = !isPlaying;
+      }
 
       const countDownDate = new Date("Mar 17, 2026 16:00:00").getTime();
-
-      const x = setInterval(function () {
+      setInterval(function () {
         const now = new Date().getTime();
-        const distance = countDownDate - now;
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-        );
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("days").innerHTML =
-          days < 10 ? "0" + days : days;
-        document.getElementById("hours").innerHTML =
-          hours < 10 ? "0" + hours : hours;
-        document.getElementById("minutes").innerHTML =
-          minutes < 10 ? "0" + minutes : minutes;
-        document.getElementById("seconds").innerHTML =
-          seconds < 10 ? "0" + seconds : seconds;
-
-        if (distance < 0) {
-          clearInterval(x);
-          document.getElementById("days").innerHTML = "00";
-          document.getElementById("hours").innerHTML = "00";
-          document.getElementById("minutes").innerHTML = "00";
-          document.getElementById("seconds").innerHTML = "00";
-        }
+        const d = countDownDate - now;
+        document.getElementById("days").innerHTML = Math.floor(
+          d / (1000 * 60 * 60 * 24),
+        )
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("hours").innerHTML = Math.floor(
+          (d % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        )
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("minutes").innerHTML = Math.floor(
+          (d % (1000 * 60 * 60)) / (1000 * 60),
+        )
+          .toString()
+          .padStart(2, "0");
+        document.getElementById("seconds").innerHTML = Math.floor(
+          (d % (1000 * 60)) / 1000,
+        )
+          .toString()
+          .padStart(2, "0");
       }, 1000);
     </script>
   </body>
